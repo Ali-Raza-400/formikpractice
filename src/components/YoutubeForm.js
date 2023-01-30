@@ -1,4 +1,5 @@
-import { useFormik } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 const onSubmit = (values) => {
   console.log("form values", values);
 };
@@ -22,58 +23,43 @@ const validate = (values) => {
   }
   return errors;
 };
+let validationSchema = Yup.object({
+  name: Yup.string().required("req"),
+  email: Yup.string().email("not Valid Email").required("required"),
+  channel: Yup.string().required("required"),
+});
 const YoutubeForm = () => {
-  const formik = useFormik({
-    initialValues,
-    onSubmit,
-    validate,
-  });
-  console.log("form Values Touched", formik.touched);
+  // const formik = useFormik({
+  //   initialValues,
+  //   onSubmit,
+  //   // validate,
+  //   validationSchema,
+  // });
   return (
-    <div>
-      <form onSubmit={formik.handleSubmit}>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}
+    >
+      <Form>
         <div className="form-control">
           <label>Name</label>
-          <input
-            id="name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            type="text"
-            onBlur={formik.onBlur}
-          />
-          {formik.touched.name && formik.errors.name ? (
-            <div className="error">{formik.errors.name}</div>
-          ) : null}
+          <Field id="name" name="name" type="text" />
+          <ErrorMessage name="name" />
         </div>
         <div className="form-control">
           <label>E-mail</label>
-          <input
-            id="email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            type="text"
-            onBlur={formik.onBlur}
-          />
-          {formik.touched.email && formik.errors.email ? (
-            <div className="error">{formik.errors.email}</div>
-          ) : null}
+          <Field id="email" name="email" type="text" />
+          <ErrorMessage name="email" />
         </div>
         <div className="form-control">
           <label>Channel</label>
-          <input
-            id="channel"
-            value={formik.values.channel}
-            onChange={formik.handleChange}
-            type="text"
-            onBlur={formik.onBlur}
-          />
-          {formik.touched.channel && formik.errors.channel ? (
-            <div className="error">{formik.errors.channel}</div>
-          ) : null}
+          <Field id="channel" type="text" name="channel" />
+          <ErrorMessage name="channel" />
         </div>
         <button type="submit">Submit</button>
-      </form>
-    </div>
+      </Form>
+    </Formik>
   );
 };
 
